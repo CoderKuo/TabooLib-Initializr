@@ -12,13 +12,12 @@ import java.nio.file.Files
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 
 object Initializr {
 
     lateinit var config: Dict
-    val moduleMapping: LinkedHashMap<String, Module> = java.util.LinkedHashMap()
+    val moduleMapping: LinkedHashMap<String, Module> = LinkedHashMap()
     val templates = mutableListOf<Template>()
     val wrapperFile = File("./template/gradle-wrapper.jar")
 
@@ -47,14 +46,14 @@ object Initializr {
                 it.mkdirs()
             }
         }
+        val service = ThreadUtil.newCompletionService<Template>()
         val templates = (config.get("templates") as List<Map<String, Any>>)
         val total = templates.size
         var index = 1
-        val newCompletionService = ThreadUtil.newCompletionService<Unit>()
         templates.map {
             Dict(it).toBean(Template::class.java)
-        }.forEach {
-            newCompletionService.submit {
+        }.map {
+            service.submit {
                 val templateFile = File(file, it.name)
                 val thisFileURL = URL(remoteURL.plus("/${it.name}"))
                 if (templateFile.exists()) {
@@ -66,20 +65,21 @@ object Initializr {
                     println("&f[&6!&f] &a检测到 ${it.name} 文件未下载,正在下载...")
                     downloadFile(thisFileURL, templateFile)
                 }
-                this.templates.add(it)
                 println("&f[&a+&f] &b${it.name} &a模板加载成功. &f(&a${index++}&f/&a$total&f)")
+                it
             }
+        }.forEach {
+            this.templates.add(it.get())
         }
-        newCompletionService.take().get(30, TimeUnit.SECONDS)
         println("&f[&a*&f] &a共加载了 ${templates.size} 个模板文件.")
     }
 
     private fun verify(file: File, url: URL): Boolean {
         val openStream = url.openConnection().getInputStream()
-        val readFully = readFully(openStream).toString(Charsets.UTF_8)
+        val readFully = readFully(openStream).toString(Charsets.UTF_8).substring(0, 40)
         openStream.close()
         val hash = getHash(file)
-        return readFully == hash
+        return readFully != hash
     }
 
     private fun downloadFile(url: URL, out: File) {

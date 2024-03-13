@@ -13,9 +13,9 @@ setting-template:
         - name: 'BUKKIT_ALL'
 
 
-wrapperDownloadFile: "https://souts.cn/upload/gradle-wrapper.jar"
+wrapperDownloadFile: "https://gitee.com/dakuo/taboo-lib-initializr-template/raw/master/gradle-wrapper.jar"
 
-templateDownloadURL: "https://cdn.jsdelivr.net/gh/CoderKuo/TabooLib-Initializr-Template@master/template"
+templateDownloadURL: "https://gitee.com/dakuo/taboo-lib-initializr-template/raw/master/template/"
 templates:
   - name: 'build.gradle.kts.ftl'
     path: '.'

@@ -22,10 +22,9 @@ class InitializrService {
 
 
     fun start() {
-        val genSettingTemplate = genSettingTemplate()
-
         println("&f[&a✓&f] &a设置已完成,准备开始生成文件")
 
+        val genSettingTemplate = genSettingTemplate()
         writeFile(genSettingTemplate)
 
         println("&f[&a✓&f] &a成功!!")
