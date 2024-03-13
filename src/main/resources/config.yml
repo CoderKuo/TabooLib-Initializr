@@ -1,3 +1,6 @@
+# 是否开启模板文件校验
+verify: true
+
 setting-template:
   example:
     group: 'com.dakuo'

@@ -1,11 +1,34 @@
+import io.izzel.taboolib.gradle.APPLICATION
+import io.izzel.taboolib.gradle.CONFIGURATION
+import io.izzel.taboolib.gradle.EXPANSION_COMMAND_HELPER
+
 plugins {
     java
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("io.izzel.taboolib") version "2.0.9"
     kotlin("jvm") version "1.9.21"
 }
 
 group = "cn.souts"
 version = "1.1"
+
+taboolib {
+    env {
+        install(APPLICATION)
+        install(CONFIGURATION)
+        install(EXPANSION_COMMAND_HELPER)
+        // 依赖下载目录
+        fileLibs = "libraries"
+        // 资源下载目录
+        fileAssets = "assets"
+    }
+    version {
+        taboolib = "6.1.1-beta10"
+        skipKotlinRelocate = true
+        skipTabooLibRelocate = true
+    }
+
+    classifier = null
+}
 
 
 repositories {
@@ -13,26 +36,21 @@ repositories {
 }
 
 dependencies {
-    implementation("org.yaml:snakeyaml:2.2")
-    implementation("org.fusesource.jansi:jansi:2.4.1")
-    implementation("org.freemarker:freemarker:2.3.32")
-    implementation("cn.hutool:hutool-all:5.8.26")
+    taboo("org.fusesource.jansi:jansi:2.4.1")
+    taboo("org.freemarker:freemarker:2.3.32")
+    taboo("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.21")
 
-    implementation("com.google.code.gson:gson:2.9.0")
+//    implementation("cn.hutool:hutool-all:5.8.26")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
 
-tasks.shadowJar {
-    destinationDirectory.set(File("./out"))
-    archiveBaseName = "TabooLibInitializr"
-    archiveClassifier = ""
-    archiveVersion = "$version"
+
+tasks.jar {
     manifest {
-        attributes("Main-Class" to "cn.souts.taboolibinitializr.Initializr")
+        attributes("Main-Class" to "cn.souts.taboolibinitializr.Main")
         attributes("Description" to "TabooLib模板生成器")
     }
-
 }
 
 

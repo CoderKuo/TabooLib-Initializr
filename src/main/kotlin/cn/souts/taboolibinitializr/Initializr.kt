@@ -1,11 +1,12 @@
 package cn.souts.taboolibinitializr
 
-import cn.hutool.core.lang.Dict
-import cn.hutool.core.thread.ThreadUtil
-import cn.hutool.setting.yaml.YamlUtil
 import cn.souts.taboolibinitializr.utils.println
 import org.fusesource.jansi.Ansi
 import org.fusesource.jansi.AnsiConsole
+import taboolib.common.LifeCycle
+import taboolib.common.platform.Awake
+import taboolib.module.configuration.Config
+import taboolib.module.configuration.Configuration
 import java.io.*
 import java.net.URL
 import java.nio.file.Files
@@ -16,13 +17,15 @@ import java.util.*
 
 object Initializr {
 
-    lateinit var config: Dict
+    @Config
+    lateinit var config: Configuration
     val moduleMapping: LinkedHashMap<String, Module> = LinkedHashMap()
     val templates = mutableListOf<Template>()
     val wrapperFile = File("./template/gradle-wrapper.jar")
 
-    @JvmStatic
-    fun main(args: Array<String>) {
+
+    fun start() {
+        val startTime = System.currentTimeMillis()
         AnsiConsole.systemInstall()
         printBanner()
 
@@ -30,46 +33,50 @@ object Initializr {
         loadMapping()
         loadTemplate()
         if (!wrapperFile.exists()) {
-            downloadFile(URL(config.getStr("wrapperDownloadFile")), wrapperFile)
+            downloadFile(URL(config.getString("wrapperDownloadFile")), wrapperFile)
         }
 
-        InitializrService().start()
+        InitializrCommand.register()
 
+
+
+        println("&f[&a✓&f] &a所有设置已完成,启动共耗时: &6${System.currentTimeMillis() - startTime} &ams.")
+    }
+
+    @Awake(LifeCycle.DISABLE)
+    fun disable() {
         AnsiConsole.systemUninstall()
     }
 
     private fun loadTemplate() {
         println("&f[&a*&f] &6加载模板文件中...")
-        val remoteURL = config.getStr("templateDownloadURL")
+        val remoteURL = config.getString("templateDownloadURL")
         val file = File("./template").also {
             if (!it.exists()) {
                 it.mkdirs()
             }
         }
-        val service = ThreadUtil.newCompletionService<Template>()
         val templates = (config.get("templates") as List<Map<String, Any>>)
         val total = templates.size
         var index = 1
         templates.map {
-            Dict(it).toBean(Template::class.java)
+            Template(it.get("name").toString(), it.get("path").toString())
         }.map {
-            service.submit {
-                val templateFile = File(file, it.name)
-                val thisFileURL = URL(remoteURL.plus("/${it.name}"))
-                if (templateFile.exists()) {
-                    if (verify(templateFile, URL(thisFileURL.toString().plus(".sha1")))) {
-                        println("&f[&6!&f] &a检测到 ${it.name} 文件有更新,正在更新...")
-                        downloadFile(thisFileURL, templateFile)
-                    }
-                } else {
-                    println("&f[&6!&f] &a检测到 ${it.name} 文件未下载,正在下载...")
+            val templateFile = File(file, it.name)
+            val thisFileURL = URL(remoteURL.plus("/${it.name}"))
+            if (templateFile.exists()) {
+                if (config.getBoolean("verify") && verify(templateFile, URL(thisFileURL.toString().plus(".sha1")))) {
+                    println("&f[&6!&f] &a检测到 ${it.name} 文件有更新,正在更新...")
                     downloadFile(thisFileURL, templateFile)
                 }
-                println("&f[&a+&f] &b${it.name} &a模板加载成功. &f(&a${index++}&f/&a$total&f)")
-                it
+            } else {
+                println("&f[&6!&f] &a检测到 ${it.name} 文件未下载,正在下载...")
+                downloadFile(thisFileURL, templateFile)
             }
+            println("&f[&a+&f] &b${it.name} &a模板加载成功. &f(&a${index++}&f/&a$total&f)")
+            it
         }.forEach {
-            this.templates.add(it.get())
+            this.templates.add(it)
         }
         println("&f[&a*&f] &a共加载了 ${templates.size} 个模板文件.")
     }
@@ -140,10 +147,10 @@ object Initializr {
             }
             println("&f[&a+&f] &a模块文件创建成功!")
         }
-        val moduleMappingYaml = YamlUtil.load(file.reader())
-        val modules = moduleMappingYaml.get("modules") as List<*>
+        val configuration = Configuration.loadFromFile(file)
+        val modules = configuration.getMapList("modules")
         modules.forEach {
-            (it as LinkedHashMap<String, Any>).let {
+            it.let {
                 Module(it.get("name") as? String, it.get("desc") as? String, it.get("dependency") as? List<String>)
             }.also {
                 moduleMapping[it.name!!] = it
@@ -165,7 +172,7 @@ object Initializr {
             }
             println("&f[&a+&f] &a配置文件创建成功!")
         }
-        config = YamlUtil.load(file.reader())
+        config = Configuration.loadFromFile(file)
         println("&f[&a+&f] &a配置文件加载成功 ✓")
     }
 
