@@ -1,0 +1,82 @@
+modules:
+  - name: CHAT
+    desc: '聊天模块'
+  - name: CONFIGURATION
+    desc: '配置模块'
+  - name: LANG
+    desc: '语言模块'
+    dependency:
+      - CONFIGURATION
+  - name: KETHER
+    desc: 'kether模块'
+    dependency:
+      - CONFIGURATION
+  - name: METRICS
+    desc: 'bstat统计模块'
+    dependency:
+      - CONFIGURATION
+  - name: DATABASE
+    desc: '数据库模块'
+    dependency:
+      - CONFIGURATION
+  - name: NMS
+    desc: 'nms模块'
+  - name: NMS_UTIL
+    desc: 'nms工具库'
+    dependency:
+      - NMS
+  - name: NAVIGATION
+    desc: '导航模块'
+    dependency:
+      - NMS
+  - name: AI
+    desc: 'AI模块'
+    dependency:
+      - NMS
+  - name: UI
+    desc: 'UI模块'
+    dependency:
+      - CHAT
+      - NMS
+  - name: EFFECT
+  - name: PORTICUS
+  - name: EXPANSION_REDIS
+  - name: EXPANSION_COMMAND_HELPER
+  - name: EXPANSION_GEEK_TOOL
+  - name: EXPANSION_IOC
+  - name: EXPANSION_JAVASCRIPT
+  - name: EXPANSION_LANG_TOOL
+  - name: EXPANSION_PLAYER_DATABASE
+  - name: EXPANSION_PLAYER_FAKE_OP
+  - name: EXPANSION_SUBMIT_CHAIN
+  - name: EXPANSION_PTC
+  - name: EXPANSION_PTC_OBJECT
+  - name: EXPANSION_JEXL
+  - name: EXPANSION_FOLIA
+  - name: APPLICATION
+  - name: BUKKIT
+  - name: BUKKIT_HOOK
+  - name: BUKKIT_UTIL
+  - name: BUKKIT_XSERIES
+  - name: BUNGEE
+  - name: VELOCITY
+  - name: BUKKIT_ALL
+    desc: 'Bukkit 完整模块'
+    dependency:
+      - BUKKIT
+      - BUKKIT_HOOK
+      - BUKKIT_UTIL
+      - BUKKIT_XSERIES
+  - name: UNIVERSAL
+    desc: '泛用模块'
+    dependency:
+      - CHAT
+      - CONFIGURATION
+      - LANG
+      - EXPANSION_COMMAND_HELPER
+  - name: UNIVERSAL_DATABASE
+    desc: '通用数据存储'
+    dependency:
+      - DATABASE
+      - EXPANSION_PTC_OBJECT
+

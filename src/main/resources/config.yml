@@ -1,0 +1,41 @@
+setting-template:
+  example:
+    group: 'com.dakuo'
+    description:
+      contributors:
+        - name: 'dakuo'
+          description: "abc"
+      links:
+        - name: 'blog'
+          url: 'https://souts.cn'
+    env:
+      modules:
+        - name: 'BUKKIT_ALL'
+
+
+wrapperDownloadFile: "https://souts.cn/upload/gradle-wrapper.jar"
+
+templateDownloadURL: "https://cdn.jsdelivr.net/gh/CoderKuo/TabooLib-Initializr-Template@master/template"
+templates:
+  - name: 'build.gradle.kts.ftl'
+    path: '.'
+  - name: 'Plugin.kt.ftl'
+    path: './src/main/kotlin/${group}/${name?lower_case}/${name}.kt'
+  - name: 'main.yml.ftl'
+    path: './.github/workflows/.'
+  - name: 'README.md.ftl'
+    path: '.'
+  - name: 'settings.gradle.kts.ftl'
+    path: '.'
+  - name: 'LINCENSE.ftl'
+    path: '.'
+  - name: 'gradlew.ftl'
+    path: '.'
+  - name: 'gradlew.bat.ftl'
+    path: '.'
+  - name: 'gradle-wrapper.properties.ftl'
+    path: './gradle/wrapper/.'
+  - name: 'gradle.properties.ftl'
+    path: '.'
+  - name: '.gitignore.ftl'
+    path: '.'
