@@ -11,3 +11,8 @@
 ```
 java -jar TabooLibInitializr-1.0.jar
 ```
+
+
+## 模板仓库
+
+![TabooLib-Initializr-Template](https://github.com/CoderKuo/TabooLib-Initializr-Template)
