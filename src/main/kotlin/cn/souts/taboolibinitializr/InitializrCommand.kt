@@ -46,7 +46,7 @@ object InitializrCommand {
                                 return@execute
                             }
                             map[context["name"]] = settingTemplate
-                            sender.sendMessageColored("&f[&a+&f] &a [${context["name"]}] 预设项目创建完成,输入 &btb edit ${context["name"]} &a命令进行下一步编辑")
+                            sender.sendMessageColored("&f[&a+&f] &a [${context["name"]}] 预设项目创建完成,输入 &btb edit ${context["name"]} ... &a命令进行下一步编辑")
                         }
                     }
                 }
@@ -68,7 +68,7 @@ object InitializrCommand {
                         execute<ProxyCommandSender> { sender, context, argument ->
                             map[context["name"]]!!.env.also { env ->
                                 if (env == null) {
-                                    sender.sendMessageColored("env为空")
+                                    sender.sendMessageColored("&f[&c!&] env 为空")
                                 } else {
                                     sender.sendMessageColored(env.toString())
                                 }
@@ -79,7 +79,9 @@ object InitializrCommand {
                                 val moduleList = moduleList
                                 sender.sendMessageColored("&f[&a!&f] 模块列表 ─┐")
                                 moduleList.forEachIndexed { index, module ->
-                                    sender.sendMessageColored("&f[&a$index&f] 模块名:${module.name} 模块描述:${module.desc} 模块依赖:${module.dependency}")
+                                    val desc = module.desc
+                                    val dependency = module.dependency
+                                    sender.sendMessageColored("&f[&a$index&f] 模块名:${module.name}${desc?.let { " 模块描述:$it" } ?: ""}${dependency?.let { " 模块依赖:$it" } ?: ""}")
                                 }
                             }
                         }
@@ -114,8 +116,9 @@ object InitializrCommand {
 
                         }
                     }
-
-
+                    execute<ProxyCommandSender> { sender, _, _ ->
+                        sender.sendMessageColored("&f[&c!!&f] &c命令参数错误")
+                    }
                 }
             }
             literal("remove") {
@@ -161,7 +164,7 @@ object InitializrCommand {
 
     private fun createNewSetTemplate(name: String, sender: ProxyCommandSender) {
         map[name] = SettingTemplate(name = name)
-        sender.sendMessageColored("&f[&+&f] &a [$name] 预设项目创建完成,输入 &btb edit $name &a命令进行下一步编辑")
+        sender.sendMessageColored("&f[&+&f] &a [$name] 预设项目创建完成,输入 &btb edit $name ... &a命令进行下一步编辑")
     }
 
     fun ProxyCommandSender.sendMessageColored(msg: String) {
