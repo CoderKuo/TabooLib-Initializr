@@ -4,7 +4,7 @@ import io.izzel.taboolib.gradle.EXPANSION_COMMAND_HELPER
 
 plugins {
     java
-    id("io.izzel.taboolib") version "2.0.9"
+    id("io.izzel.taboolib") version "2.0.11"
     kotlin("jvm") version "1.9.21"
 }
 
@@ -22,7 +22,7 @@ taboolib {
         fileAssets = "assets"
     }
     version {
-        taboolib = "6.1.1-beta10"
+        taboolib = "6.1.1-beta21"
         skipKotlinRelocate = true
         skipTabooLibRelocate = true
     }
