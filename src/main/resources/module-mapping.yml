@@ -39,14 +39,20 @@ modules:
       - CHAT
       - NMS
   - name: EFFECT
+    desc: '莫式粒子库'
   - name: PORTICUS
+    desc: 'BungeeCord 通讯工具'
   - name: EXPANSION_REDIS
+    desc: 'Redis 扩展模块'
   - name: EXPANSION_COMMAND_HELPER
+    desc: '命令帮助扩展模块'
   - name: EXPANSION_GEEK_TOOL
   - name: EXPANSION_IOC
   - name: EXPANSION_JAVASCRIPT
+    desc: 'JavaScript 扩展模块'
   - name: EXPANSION_LANG_TOOL
   - name: EXPANSION_PLAYER_DATABASE
+    desc: '玩家持久化数据扩展模块'
   - name: EXPANSION_PLAYER_FAKE_OP
   - name: EXPANSION_SUBMIT_CHAIN
   - name: EXPANSION_PTC
