@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "cn.souts"
-version = "1.1"
+version = "1.3"
 
 taboolib {
     env {
